@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  webapp:
+    build:
+      context: ./webapp
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - api
+    networks:
+      - app-network
+
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+    networks:
+      - app-network
+  
+  ml:
+    build:
+      context: ./ml
+      dockerfile: Dockerfile
+    ports:
+      - "8001:8001"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
