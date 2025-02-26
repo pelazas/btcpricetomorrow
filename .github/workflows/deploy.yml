@@ -13,13 +13,17 @@ jobs:
       - name: Set up SSH key
         run: |
           mkdir -p ~/.ssh
-          cp ${{ secrets.SSH_PRIVATE_KEY }} > ~/.ssh/azureuser.pem
+          cat <<EOF > ~/.ssh/azureuser.pem
+          ${{ secrets.SSH_PRIVATE_KEY }}
+          EOF
           chmod 600 ~/.ssh/azureuser.pem
           ssh-keyscan 128.251.226.69 >> ~/.ssh/known_hosts
 
       - name: Run Commands via SSH
         run: |
           ssh -i ~/.ssh/azureuser.pem azureuser@128.251.226.69 "
+            echo 'Listing directories:' && ls -lah ~
+            echo 'Trying to cd into /btcpricetomorrow'
             cd /btcpricetomorrow && \
             git pull origin main && \
             docker-compose down && \
