@@ -22,8 +22,8 @@ jobs:
       - name: Run Commands via SSH
         run: |
           ssh -i ~/.ssh/azureuser.pem azureuser@128.251.226.69 "
-            cd /path/to/your/project && \
+            cd /btcpricetomorrow && \
             git pull origin main && \
             docker-compose down && \
-            docker-compose up --build
+            docker-compose up --build -d
           "
