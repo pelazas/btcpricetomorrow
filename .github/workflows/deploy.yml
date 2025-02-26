@@ -17,14 +17,14 @@ jobs:
           ${{ secrets.SSH_PRIVATE_KEY }}
           EOF
           chmod 600 ~/.ssh/azureuser.pem
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
           ssh-keyscan 128.251.226.69 >> ~/.ssh/known_hosts
 
       - name: Run Commands via SSH
         run: |
           ssh -i ~/.ssh/azureuser.pem azureuser@128.251.226.69 "
-            echo 'Listing directories:' && ls -lah ~
-            echo 'Trying to cd into btcpricetomorrow'
             cd btcpricetomorrow && \
+            git pull https://${{ secrets.GH_TOKEN }}@github.com/pelazas/btcpricetomorrow.git main && \
             git pull origin main && \
             docker-compose down && \
             docker-compose up --build -d
