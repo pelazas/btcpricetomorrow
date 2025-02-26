@@ -23,7 +23,7 @@ jobs:
         run: |
           ssh -i ~/.ssh/azureuser.pem azureuser@128.251.226.69 "
             echo 'Listing directories:' && ls -lah ~
-            echo 'Trying to cd into /btcpricetomorrow'
+            echo 'Trying to cd into btcpricetomorrow'
             cd /btcpricetomorrow && \
             git pull origin main && \
             docker-compose down && \
