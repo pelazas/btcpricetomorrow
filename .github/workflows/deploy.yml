@@ -13,7 +13,7 @@ jobs:
       - name: Set up SSH key
         run: |
           mkdir -p ~/.ssh
-          cat ${{ secrets.SSH_PRIVATE_KEY }} > ~/.ssh/azureuser.pem
+          cp ${{ secrets.SSH_PRIVATE_KEY }} > ~/.ssh/azureuser.pem
           chmod 600 ~/.ssh/azureuser.pem
           ssh-keyscan 128.251.226.69 >> ~/.ssh/known_hosts
 
