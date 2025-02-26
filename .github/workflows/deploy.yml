@@ -25,7 +25,6 @@ jobs:
           ssh -i ~/.ssh/azureuser.pem azureuser@128.251.226.69 "
             cd btcpricetomorrow && \
             git pull https://${{ secrets.GH_TOKEN }}@github.com/pelazas/btcpricetomorrow.git main && \
-            git pull origin main && \
             docker-compose down && \
             docker-compose up --build -d
           "
