@@ -1,0 +1,29 @@
+name: Deploy on Push
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest  # Use GitHub-hosted runner
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up SSH key
+        run: |
+          mkdir -p ~/.ssh
+          cat <<EOF > ~/.ssh/azureuser.pem
+          ${{ secrets.SSH_PRIVATE_KEY }}
+          EOF
+          chmod 600 ~/.ssh/azureuser.pem
+          ssh-keyscan 128.251.226.69 >> ~/.ssh/known_hosts
+
+      - name: Run Commands via SSH
+        run: |
+          ssh -i ~/.ssh/azureuser.pem azureuser@128.251.226.69 "
+            cd /path/to/your/project && \
+            git pull origin main && \
+            docker-compose down && \
+            docker-compose up --build
+          "

@@ -1,9 +1,12 @@
 - name: Set up SSH key
   run: |
     mkdir -p ~/.ssh
-    echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/azureuser.pem
+    # Use "cat" to preserve newlines in the key
+    cat <<EOF > ~/.ssh/azureuser.pem
+    ${{ secrets.SSH_PRIVATE_KEY }}
+    EOF
     chmod 600 ~/.ssh/azureuser.pem
     ssh-keyscan 128.251.226.69 >> ~/.ssh/known_hosts
 
 - name: Execute deployment script via SSH
-  run: ssh -i ~/.ssh/id_ed25519 azureuser@128.251.226.69 'bash -s' < ./your-script.sh
+  run: ssh -i ~/.ssh/azureuser.pem azureuser@128.251.226.69 'bash -s' < ./your-script.sh
