@@ -1,6 +1,6 @@
 
 export default function Home() {
   return (
-    <p>Cambio 1</p>
+    <p>Cambio 2</p>
   );
 }
