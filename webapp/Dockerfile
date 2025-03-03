@@ -2,12 +2,9 @@
 FROM node:18-alpine AS builder
 
 WORKDIR /app
-
-# Copy package files and install dependencies
-COPY package*.json ./
+COPY package*.json package-lock.json ./
 RUN npm install
 
-# Copy source files and build
 COPY . .
 RUN npm run build
 
@@ -15,13 +12,12 @@ RUN npm run build
 FROM node:18-alpine
 
 WORKDIR /app
-ENV NODE_ENV production
+ENV NODE_ENV=production
+ENV CI=true
 
-# Install only production dependencies
-COPY package*.json ./
-RUN npm install --only=production
-
-# Copy built assets from builder
+# Copy only required files
+COPY package*.json package-lock.json ./
+COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 
