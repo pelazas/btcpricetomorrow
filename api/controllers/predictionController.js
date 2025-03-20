@@ -4,7 +4,7 @@ const axios = require('axios');
 exports.makePrediction = async (req, res) => {
   try {
     // Get prediction from ML microservice
-    console.log("HERE!")
+    console.log("ML URI", process.env.ML_URI)
     const response = await axios.get(`${process.env.ML_URI}/predict`);
     console.log(response.data)
     const predictedValue = response.data.next_day_prediction;

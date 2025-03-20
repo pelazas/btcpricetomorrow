@@ -26,5 +26,5 @@ jobs:
             cd btcpricetomorrow && \
             git pull https://${{ secrets.GH_TOKEN }}@github.com/pelazas/btcpricetomorrow.git main && \
             docker-compose down && \
-            docker-compose up --build -d
+            docker-compose --profile production up --build -d
           "

@@ -1,20 +1,4 @@
 services:
-  nginx:
-    image: nginx:alpine
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-      - /etc/letsencrypt:/etc/letsencrypt:ro
-    networks:
-      - app-network
-    depends_on:
-      - webapp
-      - api
-      - ml
-    profiles: ["production"]
-
   webapp:
     build:
       context: ./webapp
@@ -34,8 +18,8 @@ services:
       dockerfile: Dockerfile
     environment:
       - PORT=8000
-      - ML_SERVICE_URL=${ML_SERVICE_URL}
-      - MONGO_URI=mongodb://root:example@mongodb:27017
+      - ML_URI=${ML_URI}
+      - MONGO_URI=${MONGO_URI}
     ports:
       - "8000:8000"
     networks:
@@ -66,6 +50,7 @@ services:
       - mongodb_data:/data/db
     networks:
       - app-network
+    profiles: ["development"] 
 
 networks:
   app-network:
