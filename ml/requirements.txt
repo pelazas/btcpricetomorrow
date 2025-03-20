@@ -1,6 +1,8 @@
-flask==3.0.0
 gunicorn==21.2.0
+flask
 requests
 pandas
+seaborn
 matplotlib
+scikit-learn
 flask-cors
