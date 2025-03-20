@@ -31,7 +31,7 @@ export default function Home() {
     const fetchPrediction = async () => {
       try {
         const response = await axios.get(
-          process.env.NEXT_PUBLIC_API_URL + '/predictions/getPrediction' || 'http://localhost:8000/api/predictions/getPrediction'
+          process.env.NEXT_PUBLIC_API_URL + '/predictions/getPrediction'
         );
         setPrediction(response.data.next_day_prediction);
       } catch (err) {
