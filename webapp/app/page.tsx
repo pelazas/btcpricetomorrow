@@ -18,7 +18,6 @@ export default function Home() {
     const tomorrow = new Date(today);
     tomorrow.setDate(today.getDate() + 1);
     
-    // Format the date as "4 March"
     const options: Intl.DateTimeFormatOptions = { 
       day: 'numeric', 
       month: 'long' 
@@ -26,6 +25,7 @@ export default function Home() {
     const formatted = tomorrow.toLocaleDateString('en-GB', options);
     setFormattedDate(formatted);
   }, []);
+
   
   useEffect(() => {
     const fetchPrediction = async () => {
