@@ -18,4 +18,5 @@ COPY --from=builder /usr/local/bin /usr/local/bin
 COPY app.py .
 
 # Use Gunicorn for production
+EXPOSE 8001
 CMD ["gunicorn", "--bind", "0.0.0.0:8001", "app:app"]

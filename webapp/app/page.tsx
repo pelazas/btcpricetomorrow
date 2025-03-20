@@ -1,10 +1,51 @@
 "use client"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { motion } from 'framer-motion'
-import { ArrowUpIcon } from 'lucide-react';
+//import { ArrowUpIcon } from 'lucide-react';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 
 export default function Home() {
-  console.log(motion)
+
+  const [prediction, setPrediction] = useState<number | null>(null);
+  const [loading, setLoading] = useState(true);
+  //const [error, setError] = useState<string | null>(null);
+  const [formattedDate, setFormattedDate] = useState('');
+
+  useEffect(() => {
+    // Get tomorrow's date
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+    
+    // Format the date as "4 March"
+    const options: Intl.DateTimeFormatOptions = { 
+      day: 'numeric', 
+      month: 'long' 
+    };
+    const formatted = tomorrow.toLocaleDateString('en-GB', options);
+    setFormattedDate(formatted);
+  }, []);
+  
+  useEffect(() => {
+    const fetchPrediction = async () => {
+      try {
+        const response = await axios.get(
+          process.env.NEXT_PUBLIC_API_URL + '/predictions/getPrediction' || 'http://localhost:8000/api/predictions/getPrediction'
+        );
+        setPrediction(response.data.next_day_prediction);
+      } catch (err) {
+        //setError('Failed to fetch prediction');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPrediction();
+  }, []);
+
+
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-yellow-50 to-orange-100 flex-grow p-8">
       <motion.div
@@ -29,7 +70,7 @@ export default function Home() {
               <Card className="bg-gradient-to-br from-yellow-200 to-orange-300 border-none shadow-lg h-full">
                 <CardHeader>
                   <CardTitle className="text-2xl text-orange-900">Next Day Forecast</CardTitle>
-                  <CardDescription className="text-orange-800">Prediction for {"4 March"} at 9:00 AM</CardDescription>
+                  <CardDescription className="text-orange-800">Prediction for {formattedDate} at 9:00 AM</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center justify-center">
@@ -39,13 +80,13 @@ export default function Home() {
                       animate={{ scale: 1 }}
                       transition={{ type: "spring", stiffness: 100 }}
                     >
-                      $91.000
+                      ${loading? 'Loading...' : prediction}
                     </motion.div>
-                    <div className="text-xl text-orange-800">
+                    {/*<div className="text-xl text-orange-800">
                       ± $500
-                    </div>
+                    </div>*/}
                   </div>
-                  <motion.div 
+                  {/*<motion.div 
                     className="flex items-center justify-center mt-4 text-xl"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -58,7 +99,7 @@ export default function Home() {
                       2,406
                       (8,56%)
                     </span>
-                  </motion.div>
+                  </motion.div>*/}
                   <div className="mt-4 text-center">
                     <span className="text-orange-800 font-semibold">Confidence Level: </span>
                     <span className="text-orange-900 font-bold">8/10</span>
