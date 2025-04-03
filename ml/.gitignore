@@ -1,1 +1,4 @@
 /myenv
+/services/data/__pycache__
+/services/models/__pycache__
+/services/preprocessing/__pycache__
