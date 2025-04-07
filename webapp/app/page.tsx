@@ -5,12 +5,20 @@ import { motion } from 'framer-motion'
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
+interface Model {
+  name: string,
+  RMSE: number;
+  MAE: number;
+  directionAccuracy: string;
+}
+
 export default function Home() {
 
   const [prediction, setPrediction] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   //const [error, setError] = useState<string | null>(null);
   const [formattedDate, setFormattedDate] = useState('');
+  const [model, setModel] = useState<Model | null>(null);
 
   useEffect(() => {
     // Get tomorrow's date
@@ -30,10 +38,15 @@ export default function Home() {
   useEffect(() => {
     const fetchPrediction = async () => {
       try {
-        const response = await axios.get(
+        const responsePrediction = await axios.get(
           process.env.NEXT_PUBLIC_API_URL + '/predictions/getPrediction'
         );
-        setPrediction(response.data.next_day_prediction);
+        setPrediction(Number(responsePrediction.data.next_day_prediction.toFixed(2)));
+
+        const responseModel = await axios.get(
+          process.env.NEXT_PUBLIC_API_URL + '/models/getModel'
+        );
+        setModel(responseModel.data);
       } catch (err) {
         //setError('Failed to fetch prediction');
         console.error(err);
@@ -43,6 +56,7 @@ export default function Home() {
     };
 
     fetchPrediction();
+    console.log(model)
   }, []);
 
 
@@ -115,22 +129,22 @@ export default function Home() {
             >
               <Card className="bg-gradient-to-br from-yellow-300 to-orange-200 border-none shadow-lg h-full">
                 <CardHeader>
-                  <CardTitle className="text-2xl text-orange-900">30-Day Accuracy</CardTitle>
+                  <CardTitle className="text-2xl text-orange-900">Last 30 Days</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="flex items-center justify-center">
-                    <motion.div 
-                      className="text-5xl font-bold text-orange-900"
-                      initial={{ scale: 0.5 }}
-                      animate={{ scale: 1 }}
-                      transition={{ type: "spring", stiffness: 100 }}
-                    >
-                      80.00%
-                    </motion.div>
+                <CardContent className="text-3xl font-bold text-orange-900">
+                  <div className="flex flex-col items-center justify-center">
+                    
+                  
+                  <div>
+                    RMSE: {model?.RMSE}
                   </div>
-                  <p className="text-center mt-2 text-orange-800">
-                    Based on the last 30 days of predictions
-                  </p>
+                  <div>
+                    MAE: {model?.MAE}
+                  </div>
+                  <div>
+                    Direction Accuracy: {model?.directionAccuracy}
+                  </div>
+                  </div>
                 </CardContent>
               </Card>
             </motion.div>

@@ -1,5 +1,7 @@
 import xgboost as xgb
 import joblib
+from flask import jsonify
+
 
 class XGBoostModel:
     def __init__(self):
@@ -27,3 +29,6 @@ class XGBoostModel:
         model = cls()
         model.model = joblib.load(path)
         return model
+    
+    def description(self):
+        return jsonify({'name': 'XGBoost', 'MAE':770.85, 'RMSE': 1235.01, 'directionAccuracy': '53.92%'})

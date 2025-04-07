@@ -1,24 +1,35 @@
-# Use an official lightweight Python image
-FROM python:3.9-slim AS builder
+# Builder stage
+FROM python:3.11-slim AS builder
 
 WORKDIR /app
 
-COPY . .
-# Install dependencies separately to leverage Docker layer caching
+# Install system dependencies for compiling Python packages
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libgomp1 \  
+    && rm -rf /var/lib/apt/lists/*
 
+COPY requirements.txt .
+# Install Python dependencies
 RUN pip install --no-cache-dir --upgrade pip \
-    && pip install --no-cache-dir -r requirements.txt
+    && pip install --no-cache-dir --prefer-binary -r requirements.txt
 
-# Production image
-FROM python:3.9-slim
+# Production stage
+FROM python:3.11-slim
 
 WORKDIR /app
 
-COPY --from=builder /usr/local/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages
+# Install runtime dependencies (e.g., libgomp1 for OpenMP)
+RUN apt-get update && apt-get install -y \
+    libgomp1 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy installed packages from builder
+COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
 COPY --from=builder /usr/local/bin /usr/local/bin
 
-COPY . . 
+# Copy only necessary files (avoid copying the entire directory twice)
+COPY . .    
 
-# Use Gunicorn for production
 EXPOSE 8001
 CMD ["gunicorn", "--bind", "0.0.0.0:8001", "app:app"]

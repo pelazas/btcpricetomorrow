@@ -15,6 +15,7 @@ connectDB();
 
 // Routes
 app.use('/api/predictions', require('./routes/predictionRoutes'));
+app.use('/api/models', require('./routes/modelsRoutes'))
 
 app.get('/', (req, res) => {
   res.send('Server running!');

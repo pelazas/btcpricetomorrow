@@ -18,6 +18,10 @@ def predict():
     prediction = model.predict(last_row)
     return jsonify({'next_day_prediction': float(prediction[0])})
 
+@app.route('/model', methods=['GET'])
+def model():
+    model = XGBoostModel()
+    return model.description()
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8001, debug=True)
