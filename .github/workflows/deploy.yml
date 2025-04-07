@@ -25,7 +25,6 @@ jobs:
           ssh -i ~/.ssh/azureuser.pem azureuser@128.251.226.69 "
             cd btcpricetomorrow && \
             git pull https://${{ secrets.GH_TOKEN }}@github.com/pelazas/btcpricetomorrow.git main && \
-            docker-compose down && \
-            docker stop $(docker ps -aq) && docker rm -f $(docker ps -aq) && docker rmi -f $(docker images -q) && docker volume prune -f && docker network prune -f && docker builder prune -f && docker system prune -a -f --volumes && \
+            docker-compose down --volumes --rmi all --remove-orphans && \
             docker-compose --profile production up --build -d
           "
