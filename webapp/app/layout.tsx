@@ -13,6 +13,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href="/favicon.ico" />
+        <title>BTC Price Tomorrow</title>
+        <meta name="description" content="Get the Bitcoin price prediction for tomorrow. Updated daily at 00:00" />
+      </head>
       <body>
         {children}
       </body>
