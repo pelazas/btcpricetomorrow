@@ -13,7 +13,7 @@ jobs:
       - name: Set up SSH key
         run: |
           mkdir -p ~/.ssh
-          cat <<EOF > ~/.ssh/azureuser.pem
+          cat <<EOF > ~/.ssh/btcpricetmrw.pem
           ${{ secrets.SSH_PRIVATE_KEY }}
           EOF
           chmod 600 ~/.ssh/btcpricetmrw.pem
