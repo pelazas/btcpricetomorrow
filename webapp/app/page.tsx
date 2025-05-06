@@ -4,12 +4,19 @@ import { motion } from 'framer-motion'
 //import { ArrowUpIcon } from 'lucide-react';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import PreviousPredictionsTable from '@/components/custom/PreviousPredictionsTable';
 
-interface Model {
+export interface Model {
   name: string,
   RMSE: number;
   MAE: number;
   directionAccuracy: string;
+}
+
+export interface Prediction {
+  next_day_prediction: number,
+  date: Date,
+  actual_price: number
 }
 
 export default function Home() {
@@ -19,6 +26,7 @@ export default function Home() {
   //const [error, setError] = useState<string | null>(null);
   const [formattedDate, setFormattedDate] = useState('');
   const [model, setModel] = useState<Model | null>(null);
+  const [previousData, setPreviousData] = useState<Prediction[]|null>(null);
 
   useEffect(() => {
     // Get tomorrow's date
@@ -41,8 +49,8 @@ export default function Home() {
         const responsePrediction = await axios.get(
           process.env.NEXT_PUBLIC_API_URL + '/predictions/getPrediction'
         );
-        setPrediction(Number(responsePrediction.data.next_day_prediction.toFixed(2)));
-
+        setPrediction(Number(responsePrediction.data.prediction.next_day_prediction.toFixed(2)));
+        setPreviousData(responsePrediction.data.predictions)
         const responseModel = await axios.get(
           process.env.NEXT_PUBLIC_API_URL + '/models/getModel'
         );
@@ -96,9 +104,6 @@ export default function Home() {
                     >
                       ${loading? 'Loading...' : prediction}
                     </motion.div>
-                    {/*<div className="text-xl text-orange-800">
-                      ± $500
-                    </div>*/}
                   </div>
                   {/*<motion.div 
                     className="flex items-center justify-center mt-4 text-xl"
@@ -148,6 +153,10 @@ export default function Home() {
                 </CardContent>
               </Card>
             </motion.div>
+          </div>
+          <div className='flex flex-col items-center w-full'>
+            <p className="text-2xl font-semibold"> Last 30 days:</p>
+            <PreviousPredictionsTable data={previousData} />
           </div>
     </div>
   );

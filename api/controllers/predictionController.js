@@ -26,8 +26,17 @@ exports.getPrediction = async (req, res) => {
     if (!prediction) {
       return res.status(404).json({ message: 'No prediction found for today' });
     }
+    // update prices
+    await PredictionService.updateActualPrices();
 
-    res.status(200).json(prediction);
+    const predictions = await PredictionService.get30daysPredictions();
+
+    const response = {
+      prediction,
+      predictions
+    }
+
+    res.status(200).json(response);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
