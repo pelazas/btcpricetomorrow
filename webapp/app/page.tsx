@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import HeaderSection from '../components/custom/HeaderSection';
 import PredictionCard from '../components/custom/PredictionCard';
-import ModelStatsCard from '../components/custom/ModelStatsCard';
 import PreviousPredictionsSection from '../components/custom/PreviousPredictionsSection';
 
 export interface Model {
@@ -24,7 +23,6 @@ export default function HomePage() {
   const [todayPrice, setTodayPrice] = useState<number|null>(null)
   const [loading, setLoading] = useState(true);
   const [formattedDate, setFormattedDate] = useState('');
-  const [model, setModel] = useState<Model | null>(null);
   const [previousData, setPreviousData] = useState<Prediction[]|null>(null);
 
   useEffect(() => {
@@ -45,10 +43,6 @@ export default function HomePage() {
         setPrediction(Number(responsePrediction.data.prediction.next_day_prediction.toFixed(2)));
         setTodayPrice(Number(responsePrediction.data.today_price))
         setPreviousData(responsePrediction.data.predictions);
-        const responseModel = await axios.get(
-          process.env.NEXT_PUBLIC_API_URL + '/models/getModel'
-        );
-        setModel(responseModel.data);
       } catch (err) {
         console.error(err);
       } finally {
@@ -61,9 +55,8 @@ export default function HomePage() {
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-yellow-50 to-orange-100 flex-grow p-8">
       <HeaderSection />
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 max-w-6xl mx-auto">
+      <div className="mb-8 lg:mx-56 md:mx-20">
         <PredictionCard prediction={prediction} loading={loading} formattedDate={formattedDate} today_price={todayPrice}/>
-        <ModelStatsCard model={model} />
       </div>
       <PreviousPredictionsSection previousData={previousData} />
     </div>
