@@ -14,6 +14,18 @@ exports.getTodaysPrediction = async () => {
   }).sort({ date: -1 });
 };
 
+exports.getTodaysPrice = async () => {
+  try {
+    const today = new Date();
+    const formattedDate = `${String(today.getDate()).padStart(2, '0')}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getFullYear()}`;
+    
+    const response = await axios.get(`https://api.coingecko.com/api/v3/coins/bitcoin/history?date=${formattedDate}`);
+    return response.data.market_data.current_price.usd;
+  } catch(error) {
+    console.error('Error fetching today\'s price:', error.message);
+    throw error;
+  }
+}
 
 exports.updateActualPrices = async () => {
   try {

@@ -28,11 +28,13 @@ exports.getPrediction = async (req, res) => {
     }
     // update prices
     await PredictionService.updateActualPrices();
+    const today_price = await PredictionService.getTodaysPrice();
 
     const predictions = await PredictionService.get30daysPredictions();
 
     const response = {
       prediction,
+      today_price,
       predictions
     }
 

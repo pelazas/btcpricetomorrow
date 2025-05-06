@@ -1,13 +1,23 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { motion } from 'framer-motion';
+import { ArrowUpIcon, ArrowDownIcon } from 'lucide-react'
+
 
 interface PredictionCardProps {
   prediction: number | null;
   loading: boolean;
   formattedDate: string;
+  today_price: number | null;
 }
 
-export default function PredictionCard({ prediction, loading, formattedDate }: PredictionCardProps) {
+const formatBigNumber = (number: number): string => {
+  return number.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+};
+
+export default function PredictionCard({ prediction, loading, formattedDate, today_price }: PredictionCardProps) {
+  const priceDifference = prediction && today_price ? prediction - today_price : 0;
+  const percentageChange = today_price ? (priceDifference / today_price) * 100 : 0;
+  
   return (
     <motion.div 
       initial={{ opacity: 0, scale: 0.9 }}
@@ -27,12 +37,23 @@ export default function PredictionCard({ prediction, loading, formattedDate }: P
               animate={{ scale: 1 }}
               transition={{ type: "spring", stiffness: 100 }}
             >
-              ${loading ? 'Loading...' : prediction}
+              {loading ? 'Loading...' : prediction ? `${formatBigNumber(prediction)}$` : ''}
             </motion.div>
           </div>
           <div className="mt-4 text-center">
-            <span className="text-orange-800 font-semibold">Confidence Level: </span>
-            <span className="text-orange-900 font-bold">8/10</span>
+            {!loading && today_price && (
+              <div className="flex items-center justify-center">
+                {priceDifference > 0 ? (
+                  <ArrowUpIcon className="text-green-600 mr-2 w-5 h-5" />
+                ) : (
+                  <ArrowDownIcon className="text-red-600 mr-2 w-5 h-5" />
+                )}
+                <span className="text-orange-900">
+                  {formatBigNumber(Math.abs(priceDifference))}$
+                  ({percentageChange.toFixed(2)}%)
+                </span>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>

@@ -21,6 +21,7 @@ export interface Prediction {
 
 export default function HomePage() {
   const [prediction, setPrediction] = useState<number | null>(null);
+  const [todayPrice, setTodayPrice] = useState<number|null>(null)
   const [loading, setLoading] = useState(true);
   const [formattedDate, setFormattedDate] = useState('');
   const [model, setModel] = useState<Model | null>(null);
@@ -42,6 +43,7 @@ export default function HomePage() {
           process.env.NEXT_PUBLIC_API_URL + '/predictions/getPrediction'
         );
         setPrediction(Number(responsePrediction.data.prediction.next_day_prediction.toFixed(2)));
+        setTodayPrice(Number(responsePrediction.data.today_price))
         setPreviousData(responsePrediction.data.predictions);
         const responseModel = await axios.get(
           process.env.NEXT_PUBLIC_API_URL + '/models/getModel'
@@ -60,7 +62,7 @@ export default function HomePage() {
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-yellow-50 to-orange-100 flex-grow p-8">
       <HeaderSection />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 max-w-6xl mx-auto">
-        <PredictionCard prediction={prediction} loading={loading} formattedDate={formattedDate} />
+        <PredictionCard prediction={prediction} loading={loading} formattedDate={formattedDate} today_price={todayPrice}/>
         <ModelStatsCard model={model} />
       </div>
       <PreviousPredictionsSection previousData={previousData} />
