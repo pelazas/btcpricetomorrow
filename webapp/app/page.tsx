@@ -55,7 +55,7 @@ export default function HomePage() {
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-yellow-50 to-orange-100 flex-grow p-8">
       <HeaderSection />
-      <div className="mb-8 lg:mx-56 md:mx-20">
+      <div className="mb-8 w-[900px] mx-auto">
         <PredictionCard prediction={prediction} loading={loading} formattedDate={formattedDate} today_price={todayPrice}/>
       </div>
       <PreviousPredictionsSection previousData={previousData} />
