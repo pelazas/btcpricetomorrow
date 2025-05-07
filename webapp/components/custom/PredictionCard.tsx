@@ -87,9 +87,9 @@ export default function PredictionCard({ prediction, loading, formattedDate, tod
         <CardContent className='p-6 md:p-8 md:px-16 lg:px-24'>
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
-            <h2 className="text-xl font-medium text-muted-foreground mb-2">Predicted Price for {formattedDate} at 00:00</h2>
+            <h2 className="text-lg md:text-xl font-medium text-muted-foreground mb-2">Predicted Price for {formattedDate} at 00:00</h2>
             <div className="flex items-center gap-3">
-              <span className="text-4xl md:text-5xl font-bold">{loading ? 'Loading...' : prediction ? `${formatBigNumber(prediction)}$` : ''}</span>
+              <span className="text-xl sm:text-4xl md:text-5xl font-bold">{loading ? 'Loading...' : prediction ? `${formatBigNumber(prediction)}$` : ''}</span>
               <div className={`flex items-center ${priceDifference>0 ? "text-green-500" : "text-red-500"}`}>
               
                 {priceDifference>0 ? (
@@ -106,12 +106,12 @@ export default function PredictionCard({ prediction, loading, formattedDate, tod
           </div>
 
           <div
-            className={`w-32 h-32 rounded-full flex items-center justify-center border-8 ${
+            className={`md:w-32 md:h-32 h-24 w-24 rounded-full flex items-center justify-center border-8 ${
               priceDifference>0 ? "border-green-500/20 text-green-500" : "border-red-500/20 text-red-500"
             }`}
           >
             <div className="text-center">
-              <div className="text-3xl font-bold">
+              <div className="text-xl md:text-3xl font-bold">
                 {priceDifference>0? "+" : ""}
                 {percentageChange.toFixed(2)}%
               </div>
@@ -121,7 +121,7 @@ export default function PredictionCard({ prediction, loading, formattedDate, tod
         </div>
 
         {/* Voting Section */}
-        <div className="mt-8 pt-6 border-t border-gray-500">
+        <div className="mt-4 pt-3 md:mt-8 md:pt-6 border-t border-gray-500">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div>
               <p className="text-lg font-medium mb-1">What do you think?</p>
