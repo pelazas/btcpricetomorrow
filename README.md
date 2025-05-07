@@ -5,8 +5,3 @@ Aplicación full stack que predice el precio de Bitcoin para el día siguiente u
 ```
 docker-compose --profile development up --build -d
 ```
-o
-
-```
-docker-compose --profile production up --build -d
-```
