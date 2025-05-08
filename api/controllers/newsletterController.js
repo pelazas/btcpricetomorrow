@@ -35,3 +35,36 @@ exports.addEmail = async (req, res) => {
         });
     }
 };
+
+exports.removeEmail = async(req,res) => {
+    try {
+        const { email } = req.body;
+
+        if (!email) {
+            return res.status(400).json({
+                success: false,
+                error: 'Email is required'
+            });
+        }
+
+        // Find and remove the email
+        const deletedEmail = await Email.findOneAndDelete({ email });
+        
+        if (!deletedEmail) {
+            return res.status(404).json({
+                success: false,
+                error: 'Email is not in the database'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: 'Successfully unsubscribed from newsletter'
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: 'Error unsubscribing from newsletter: ' + error.message
+        });
+    }
+};

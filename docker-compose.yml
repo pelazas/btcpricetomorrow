@@ -20,6 +20,7 @@ services:
       - PORT=8000
       - ML_URI=${ML_URI}
       - MONGO_URI=${MONGO_URI}
+      - EMAIL_PASSWORD=${EMAIL_PASSWORD}
     ports:
       - "8000:8000"
     networks:

@@ -8,8 +8,11 @@ async function sendEmail(value, email){
     const options = { day: 'numeric', month: 'long', year: 'numeric' };
     const formattedDate = tomorrow.toLocaleDateString('en-US', options);
 
-    // Round value to 2 decimal places
-    const roundedValue = parseFloat(value).toFixed(2);
+    // Format value with European number format (99.656,75)
+    const roundedValue = parseFloat(value).toLocaleString('de-DE', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
 
     const html = `
     <!DOCTYPE html>
@@ -25,11 +28,11 @@ async function sendEmail(value, email){
             <p>Hello,</p>
             <p>Here is the Bitcoin price prediction for <strong>${formattedDate} at 00:00</strong>:</p>
             <p style="font-size: 1.5em; font-weight: bold; color: #0f9d58;">$${roundedValue}</p>
-            <p>This prediction is based on recent data trends and algorithmic analysis. We’ll send you an update every day with the latest forecast.</p>
+            <p>This prediction is based on recent data trends and algorithmic analysis. We will send you an update every day with the latest forecast.</p>
             <p>Visit our site for more info: <a href="https://btcpricetomorrow.com" target="_blank">btcpricetomorrow.com</a></p>
             <hr style="margin-top: 30px;">
             <p style="font-size: 0.8em; color: #888;">This is an automated message. Please do not reply to this email.</p>
-            <p style="font-size: 0.8em; color: #888;">If you want to unsubscribe from this newsletter, <a href="https://btcpricetomorrow.com/unsubscribe" target="_blank">click here</a>.</p>
+            <p style="font-size: 0.8em; color: #888;">If you want to unsubscribe from this newsletter, <a href="https://btcpricetomorrow.com/unsubscribe?email=${email}" target="_blank">click here</a>.</p>
         </div>
     </body>
     </html>
