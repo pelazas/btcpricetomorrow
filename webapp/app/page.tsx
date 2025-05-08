@@ -4,6 +4,7 @@ import axios from 'axios';
 import HeaderSection from '../components/custom/HeaderSection';
 import PredictionCard from '../components/custom/PredictionCard';
 import PreviousPredictionsSection from '../components/custom/PreviousPredictionsSection';
+import NewsletterSection from '@/components/custom/NewsletterSection';
 
 export interface Model {
   name: string,
@@ -55,10 +56,11 @@ export default function HomePage() {
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-yellow-50 to-orange-100 flex-grow p-8">
       <HeaderSection />
-      <div className="mb-8 md:w-[900px] md:mx-auto sm:mx-16 mx-4">
+      <div className="mb-8 md:w-[700px] lg:w-[900px] md:mx-auto sm:mx-16 mx-4">
         <PredictionCard prediction={prediction} loading={loading} formattedDate={formattedDate} today_price={todayPrice}/>
       </div>
       <PreviousPredictionsSection previousData={previousData} />
+      <NewsletterSection />
     </div>
   );
 }

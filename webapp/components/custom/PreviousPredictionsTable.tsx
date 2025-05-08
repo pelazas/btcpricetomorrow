@@ -31,9 +31,11 @@ const PreviousPredictionsTable: FC<PreviousPredictionsTableProps> = ({ data }) =
       return `${day}-${month}`;
     };
 
-    const labels = data.map((entry: any) => formatDate(entry.date));
-    const predicted = data.map((entry: any) => entry.next_day_prediction);
-    const actual = data.map((entry: any) => entry.actual_price);
+    const sortedData = [...data].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+    const labels = sortedData.map((entry: any) => formatDate(entry.date));
+    const predicted = sortedData.map((entry: any) => entry.next_day_prediction);
+    const actual = sortedData.map((entry: any) => entry.actual_price);
 
     setChartData({
       labels,

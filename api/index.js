@@ -17,7 +17,7 @@ connectDB();
 app.use('/api/predictions', require('./routes/predictionRoutes'));
 app.use('/api/models', require('./routes/modelsRoutes'))
 app.use('/api/votes', require('./routes/voteRoutes'))
-
+app.use('/api/newsletter', require('./routes/newsletterRoutes'))
 
 app.get('/', (req, res) => {
   res.send('Server running!');

@@ -85,12 +85,12 @@ export default function PredictionCard({ prediction, loading, formattedDate, tod
           <CardDescription className="text-orange-800">Prediction for {formattedDate} at 9:00 AM</CardDescription>
         </CardHeader>*/}
         <CardContent className='p-6 md:p-8 md:px-16 lg:px-24'>
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-3 md:gap-6">
           <div>
-            <h2 className="text-lg md:text-xl font-medium text-muted-foreground mb-2">Predicted Price for {formattedDate} at 00:00</h2>
-            <div className="flex items-center gap-3">
-              <span className="text-xl sm:text-4xl md:text-5xl font-bold">{loading ? 'Loading...' : prediction ? `${formatBigNumber(prediction)}$` : ''}</span>
-              <div className={`flex items-center ${priceDifference>0 ? "text-green-500" : "text-red-500"}`}>
+            <h2 className="text-sm md:text-xl font-medium text-muted-foreground mb-2">Predicted Price for {formattedDate} at 00:00</h2>
+            <div className="flex items-center gap-2 md:gap-3">
+              <span className="text-2xl sm:text-4xl md:text-5xl font-bold">{loading ? 'Loading...' : prediction ? `${formatBigNumber(prediction)}$` : ''}</span>
+              <div className={`flex items-center ${priceDifference>0 ? "text-green-500" : "text-red-500"} text-sm md:text-base `}>
               
                 {priceDifference>0 ? (
                   <ArrowUpIcon className="h-5 w-5 ml-1" />
