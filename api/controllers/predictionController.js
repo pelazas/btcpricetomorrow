@@ -1,5 +1,7 @@
 const PredictionService = require('../services/predictionService');
+const Email = require('../models/Email')
 const axios = require('axios');
+const sendEmail = require('../services/emailService');
 
 exports.makePrediction = async (req, res) => {
   try {
@@ -11,6 +13,15 @@ exports.makePrediction = async (req, res) => {
 
     // Call PredictionService to store the prediction
     const prediction = await PredictionService.createPrediction(predictedValue);
+
+    // Get all emails from database
+    const emails = await Email.find();
+    
+    // Send prediction email to each subscriber
+    for (const email of emails) {
+      console.log("Sending email to", email.email)
+      await sendEmail(predictedValue, email.email);
+    }
 
     res.status(201).json(prediction);
   } catch (error) {
