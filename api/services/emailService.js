@@ -38,24 +38,31 @@ async function sendEmail(value, email){
     </html>
     `;
 
-    const transporter = nodeMailer.createTransport({
-        host: 'mail.privateemail.com',
-        port: 465,
-        secure: true,
-        auth: {
-            user: 'noreply@btcpricetomorrow.com',
-            pass: process.env.EMAIL_PASSWORD
-        }
-    });
+    console.log("password:",process.env.EMAIL_PASSWORD)
+    try {
+        const transporter = nodeMailer.createTransport({
+            host: 'mail.privateemail.com',
+            port: 465,
+            secure: true,
+            auth: {
+                user: 'noreply@btcpricetomorrow.com',
+                pass: process.env.EMAIL_PASSWORD
+            }
+        });
 
-    const info = await transporter.sendMail({
-        from: '"BTC Price Tomorrow" <noreply@btcpricetomorrow.com>',
-        to: email,
-        subject: 'Bitcoin Price Prediction for Tomorrow',
-        html: html,
-    });
+        const info = await transporter.sendMail({
+            from: '"BTC Price Tomorrow" <noreply@btcpricetomorrow.com>',
+            to: email,
+            subject: 'Bitcoin Price Prediction for Tomorrow',
+            html: html,
+        });
 
-    console.log("Message sent!", info.messageId);
+        console.log("Message sent!", info.messageId);
+    } catch (error) {
+        console.error('Error sending email:', error);
+    }
+
+    
 }
 
 module.exports = sendEmail;
