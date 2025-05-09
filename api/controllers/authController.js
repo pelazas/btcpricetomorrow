@@ -49,14 +49,18 @@ exports.OAuthCallback = async (req, res) => {
       }
     });
 
-    // Store access token properly (consider using your setAccessToken function)
-    setAccessToken(response.data.access_token);
-    console.log("ACCESS TOKEN:",getAccessToken())
+    console.log(response.data)
+    await setAccessToken({
+      access_token: response.data.access_token,
+      refresh_token: response.data.refresh_token,
+      expires_in: response.data.expires_in
+    });
+
     // Clear the code verifier from session after use
     req.session.codeVerifier = null;
     req.session.save();
 
-    res.send('Authentication successful! You can now post tweets.');
+    res.send('Authentication successful!');
   } catch (error) {
     console.error('Full error:', error.response?.data || error.message);
     res.status(500).send(`Authentication failed: ${error.message}`);

@@ -1,4 +1,8 @@
+const { getValidToken } = require('../config/oauth');
+const axios = require('axios')
 const Email = require('../models/Email');
+const { getTodaysPrediction, getTodaysPrice } = require('../services/predictionService');
+
 
 exports.addEmail = async (req, res) => {
     try {
@@ -66,5 +70,45 @@ exports.removeEmail = async(req,res) => {
             success: false,
             error: 'Error unsubscribing from newsletter: ' + error.message
         });
+    }
+};
+
+// Usage example in a tweet route
+exports.createPost = async (req, res) => {
+    try {
+      const accessToken = await getValidToken();
+
+      // get price prediction
+      const pricePrediction = await getTodaysPrediction();
+      // get formatted date
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const formattedDate = tomorrow.getDate() + ' ' + tomorrow.toLocaleString('default', { month: 'long' });
+      // get actual price 
+      const actualPrice = await getTodaysPrice();
+      // calculate difference
+      const priceDifference = pricePrediction.next_day_prediction - actualPrice;
+      const percentageDifference = ((priceDifference / pricePrediction.next_day_prediction) * 100).toFixed(2);
+      
+      const tweetText = `Bitcoin Price Prediction for ${formattedDate}:\n\n` +
+        `Predicted Price: $${pricePrediction.next_day_prediction.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}\n` +
+        `Current Price: $${actualPrice.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}\n` +
+        `Difference: ${priceDifference < 0 ? '-' : ''}${Math.abs(percentageDifference)}%`;
+
+      const response = await axios.post(
+        'https://api.twitter.com/2/tweets',
+        { text: tweetText },
+        {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+  
+      res.json(response.data);
+    } catch (error) {
+      console.error('Tweet error:', error);
+      res.status(500).json({ error: 'Tweet failed' });
     }
 };

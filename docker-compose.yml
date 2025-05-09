@@ -22,6 +22,9 @@ services:
       - MONGO_URI=${MONGO_URI}
       - EMAIL_PASSWORD=${EMAIL_PASSWORD}
       - NODE_ENV=${NODE_ENV}
+      - X_CLIENT_ID=${X_CLIENT_ID}
+      - X_CLIENT_SECRET=${X_CLIENT_SECRET}
+      - X_REDIRECT_URI=${X_REDIRECT_URI}
     ports:
       - "8000:8000"
     networks:
