@@ -6,31 +6,31 @@ const { authConfig, getAccessToken, setAccessToken } = require('./../config/oaut
 // Corrected OAuth function
 
 exports.OAuth = (req, res) => {
-  // Clear existing cookies
-  req.session.destroy(() => {
-    const codeVerifier = base64url(crypto.randomBytes(32));
-    req.session.regenerate((err) => {
-      if (err) return res.status(500).send('Session error');
-      
-      req.session.codeVerifier = codeVerifier;
-      req.session.save(() => {
-        // Force-set cookie header
-        res.setHeader('Set-Cookie', [
-          `connect.sid=${req.sessionID}; Path=/; Domain=btcpricetomorrow.com; Secure; SameSite=None; HttpOnly`
-        ]);
+  // Generate new code verifier
+  const codeVerifier = base64url(crypto.randomBytes(32));
+  
+  // Create new session
+  req.session.codeVerifier = codeVerifier;
+  
+  // Save session before redirect
+  req.session.save((err) => {
+    if (err) {
+      console.error('Session save error:', err);
+      return res.status(500).send('Server error');
+    }
 
-        const params = new URLSearchParams({
-          response_type: 'code',
-          client_id: authConfig.client_id,
-          redirect_uri: authConfig.redirect_uri,
-          scope: 'tweet.read tweet.write users.read offline.access',
-          code_challenge: base64url(crypto.createHash('sha256').update(codeVerifier).digest()),
-          code_challenge_method: 'S256',
-          state: 'your_state'
-      });
-        res.redirect(`https://twitter.com/i/oauth2/authorize?${params}`);
-      });
+    // Build authorization URL
+    const params = new URLSearchParams({
+      response_type: 'code',
+      client_id: authConfig.client_id,
+      redirect_uri: authConfig.redirect_uri,
+      scope: 'tweet.read tweet.write users.read offline.access',
+      code_challenge: base64url(crypto.createHash('sha256').update(codeVerifier).digest()),
+      code_challenge_method: 'S256',
+      state: 'your_state'
     });
+
+    res.redirect(`https://twitter.com/i/oauth2/authorize?${params}`);
   });
 };
 

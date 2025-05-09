@@ -21,17 +21,16 @@ app.use(session({
   secret: process.env.SESSION_SECRET,
   store: MongoStore.create({
     mongoUrl: process.env.MONGO_URI,
-    ttl: 14 * 24 * 60 * 60
+    autoRemove: 'interval',
+    autoRemoveInterval: 60 // Remove expired sessions every 60 minutes
   }),
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: true, // MUST be true in production
+    secure: true,
     sameSite: 'none',
-    domain: 'btcpricetomorrow.com', // Remove leading dot
-    path: '/',
-    httpOnly: true,
-    maxAge: 1000 * 60 * 60
+    domain: 'btcpricetomorrow.com',
+    maxAge: 1000 * 60 * 60 * 24 // 24 hours
   }
 }));
 
@@ -48,6 +47,14 @@ const allowedOrigins = process.env.NODE_ENV === 'production'
 
 // Connect to MongoDB
 connectDB();
+
+// Add before your routes
+app.use((req, res, next) => {
+  if (!req.session) {
+    return res.status(500).send('Session initialization failed');
+  }
+  next();
+});
 
 app.use((req, res, next) => {
   console.log('Session ID:', req.sessionID);
