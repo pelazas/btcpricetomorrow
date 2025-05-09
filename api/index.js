@@ -21,7 +21,8 @@ app.use(session({
   secret: process.env.SESSION_SECRET,
   store: MongoStore.create({
     mongoUrl: process.env.MONGO_URI,
-    ttl: 14 * 24 * 60 * 60
+    autoRemove: 'interval',
+    autoRemoveInterval: 10
   }),
   resave: false,
   saveUninitialized: false,
@@ -31,10 +32,7 @@ app.use(session({
     domain: 'btcpricetomorrow.com',
     path: '/',
     httpOnly: true,
-    maxAge: 86400000,
-    // Add these for Cloudflare compatibility
-    proxy: true, // Trust reverse proxy
-    overwrite: true // Allow cookie overwrite
+    maxAge: 86400000
   }
 }));
 

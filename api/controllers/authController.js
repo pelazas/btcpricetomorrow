@@ -6,15 +6,19 @@ const { authConfig, getAccessToken, setAccessToken } = require('./../config/oaut
 // Corrected OAuth function
 
 exports.OAuth = (req, res) => {
-  const codeVerifier = base64url(crypto.randomBytes(32));
-  
-  // Destroy existing session completely
-  req.session.destroy(() => {
-    req.sessionStore.createSession(req, {}, (err) => {
+  // Destroy existing session properly
+  req.session.destroy((err) => {
+    if (err) return res.status(500).send('Session destruction failed');
+    
+    // Create new session using standard regeneration
+    req.session.regenerate((err) => {
+      if (err) return res.status(500).send('Session regeneration failed');
+      
+      const codeVerifier = base64url(crypto.randomBytes(32));
       req.session.codeVerifier = codeVerifier;
       
-      // Force cookie header through Cloudflare
-      res.append('Set-Cookie', 
+      // Set cookie headers directly
+      res.setHeader('Set-Cookie', [
         `connect.sid=${req.sessionID}; ` +
         `Domain=btcpricetomorrow.com; ` +
         `Path=/; ` +
@@ -22,7 +26,7 @@ exports.OAuth = (req, res) => {
         `SameSite=None; ` +
         `HttpOnly; ` +
         `Max-Age=86400`
-      );
+      ]);
 
       const params = new URLSearchParams({
         response_type: 'code',
@@ -33,6 +37,7 @@ exports.OAuth = (req, res) => {
         code_challenge_method: 'S256',
         state: 'your_state'
       });
+
       res.redirect(`https://twitter.com/i/oauth2/authorize?${params}`);
     });
   });
