@@ -6,31 +6,35 @@ const { authConfig, getAccessToken, setAccessToken } = require('./../config/oaut
 // Corrected OAuth function
 
 exports.OAuth = (req, res) => {
-  // Generate new code verifier
   const codeVerifier = base64url(crypto.randomBytes(32));
   
-  // Create new session
-  req.session.codeVerifier = codeVerifier;
-  
-  // Save session before redirect
-  req.session.save((err) => {
-    if (err) {
-      console.error('Session save error:', err);
-      return res.status(500).send('Server error');
-    }
+  // Destroy existing session completely
+  req.session.destroy(() => {
+    req.sessionStore.createSession(req, {}, (err) => {
+      req.session.codeVerifier = codeVerifier;
+      
+      // Force cookie header through Cloudflare
+      res.append('Set-Cookie', 
+        `connect.sid=${req.sessionID}; ` +
+        `Domain=btcpricetomorrow.com; ` +
+        `Path=/; ` +
+        `Secure; ` +
+        `SameSite=None; ` +
+        `HttpOnly; ` +
+        `Max-Age=86400`
+      );
 
-    // Build authorization URL
-    const params = new URLSearchParams({
-      response_type: 'code',
-      client_id: authConfig.client_id,
-      redirect_uri: authConfig.redirect_uri,
-      scope: 'tweet.read tweet.write users.read offline.access',
-      code_challenge: base64url(crypto.createHash('sha256').update(codeVerifier).digest()),
-      code_challenge_method: 'S256',
-      state: 'your_state'
+      const params = new URLSearchParams({
+        response_type: 'code',
+        client_id: authConfig.client_id,
+        redirect_uri: authConfig.redirect_uri,
+        scope: 'tweet.read tweet.write users.read offline.access',
+        code_challenge: base64url(crypto.createHash('sha256').update(codeVerifier).digest()),
+        code_challenge_method: 'S256',
+        state: 'your_state'
+      });
+      res.redirect(`https://twitter.com/i/oauth2/authorize?${params}`);
     });
-
-    res.redirect(`https://twitter.com/i/oauth2/authorize?${params}`);
   });
 };
 

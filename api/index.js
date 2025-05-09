@@ -21,8 +21,7 @@ app.use(session({
   secret: process.env.SESSION_SECRET,
   store: MongoStore.create({
     mongoUrl: process.env.MONGO_URI,
-    autoRemove: 'interval',
-    autoRemoveInterval: 60 // Remove expired sessions every 60 minutes
+    ttl: 14 * 24 * 60 * 60
   }),
   resave: false,
   saveUninitialized: false,
@@ -30,7 +29,12 @@ app.use(session({
     secure: true,
     sameSite: 'none',
     domain: 'btcpricetomorrow.com',
-    maxAge: 1000 * 60 * 60 * 24 // 24 hours
+    path: '/',
+    httpOnly: true,
+    maxAge: 86400000,
+    // Add these for Cloudflare compatibility
+    proxy: true, // Trust reverse proxy
+    overwrite: true // Allow cookie overwrite
   }
 }));
 
@@ -47,6 +51,17 @@ const allowedOrigins = process.env.NODE_ENV === 'production'
 
 // Connect to MongoDB
 connectDB();
+
+// Add before session middleware
+app.set('trust proxy', 2); // Trust Cloudflare and Nginx
+
+app.use((req, res, next) => {
+  // Force cookie transmission through Cloudflare
+  if(req.headers['cf-visitor']) {
+    req.headers['x-forwarded-proto'] = 'https';
+  }
+  next();
+});
 
 // Add before your routes
 app.use((req, res, next) => {
