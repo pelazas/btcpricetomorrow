@@ -88,7 +88,7 @@ exports.createPost = async (req, res) => {
       const actualPrice = await getTodaysPrice();
       // calculate difference
       const priceDifference = pricePrediction.next_day_prediction - actualPrice;
-      const percentageDifference = ((priceDifference / pricePrediction.next_day_prediction) * 100).toFixed(2);
+      const percentageDifference = ((priceDifference / actualPrice) * 100).toFixed(2);
       
       const tweetText = `Bitcoin Price Prediction for ${formattedDate}:\n\n` +
         `Predicted Price: $${pricePrediction.next_day_prediction.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}\n` +
