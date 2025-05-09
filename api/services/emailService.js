@@ -42,8 +42,8 @@ async function sendEmail(value, email){
     try {
         const transporter = nodeMailer.createTransport({
             host: 'mail.privateemail.com',
-            port: 465,
-            secure: true,
+            port: 587,
+            secure: false,
             auth: {
                 user: 'noreply@btcpricetomorrow.com',
                 pass: process.env.EMAIL_PASSWORD
