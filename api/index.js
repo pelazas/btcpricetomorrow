@@ -17,19 +17,28 @@ app.use(session({
   secret: 'your-secret-key',
   resave: false,
   saveUninitialized: false,
-  cookie: {
+  cookie: { 
     secure: process.env.NODE_ENV === 'production',
     sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     maxAge: 1000 * 60 * 60 // 1 hour
   }
 }));
 
+const allowedOrigins = process.env.NODE_ENV === 'production' 
+  ? ['https://btcpricetomorrow.com', 'https://www.btcpricetomorrow.com'] 
+  : ['http://localhost:3000'];
+
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? 'https://btcpricetomorrow.com' 
-    : 'http://localhost:3000',
+  origin: function(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS: ' + origin));
+    }
+  },
   credentials: true
 }));
+
 
 // Connect to MongoDB
 connectDB();

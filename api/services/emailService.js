@@ -38,7 +38,6 @@ async function sendEmail(value, email){
     </html>
     `;
 
-    console.log("password:",process.env.EMAIL_PASSWORD)
     try {
         const transporter = nodeMailer.createTransport({
             host: 'mail.privateemail.com',
