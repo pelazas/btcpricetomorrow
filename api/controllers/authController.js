@@ -1,87 +1,82 @@
-const axios = require('axios');
 const crypto = require('crypto');
 const base64url = require('base64url');
-const { authConfig, getAccessToken, setAccessToken } = require('./../config/oauth');
+const { authConfig, setAccessToken } = require('./../config/oauth');
 
-// Corrected OAuth function
+// In-memory store with expiration
+const codeVerifiers = new Map();
 
 exports.OAuth = (req, res) => {
-  // Destroy existing session properly
-  req.session.destroy((err) => {
-    if (err) return res.status(500).send('Session destruction failed');
-    
-    // Create new session using standard regeneration
-    req.session.regenerate((err) => {
-      if (err) return res.status(500).send('Session regeneration failed');
-      
-      const codeVerifier = base64url(crypto.randomBytes(32));
-      req.session.codeVerifier = codeVerifier;
-      
-      // Set cookie headers directly
-      res.setHeader('Set-Cookie', [
-        `connect.sid=${req.sessionID}; ` +
-        `Domain=btcpricetomorrow.com; ` +
-        `Path=/; ` +
-        `Secure; ` +
-        `SameSite=None; ` +
-        `HttpOnly; ` +
-        `Max-Age=86400`
-      ]);
+    // Generate state and code verifier
+    const state = base64url(crypto.randomBytes(32));
+    const codeVerifier = base64url(crypto.randomBytes(32));
 
-      const params = new URLSearchParams({
+    // Store with 10-minute expiration
+    codeVerifiers.set(state, {
+        codeVerifier,
+        expires: Date.now() + 600000
+    });
+
+    // Cleanup old entries
+    cleanupCodeVerifiers();
+
+    const params = new URLSearchParams({
         response_type: 'code',
         client_id: authConfig.client_id,
         redirect_uri: authConfig.redirect_uri,
         scope: 'tweet.read tweet.write users.read offline.access',
         code_challenge: base64url(crypto.createHash('sha256').update(codeVerifier).digest()),
         code_challenge_method: 'S256',
-        state: 'your_state'
-      });
-
-      res.redirect(`https://twitter.com/i/oauth2/authorize?${params}`);
+        state: state
     });
-  });
+
+    res.redirect(`https://twitter.com/i/oauth2/authorize?${params}`);
 };
 
-// Corrected Callback
 exports.OAuthCallback = async (req, res) => {
-  try {
-    // Verify code verifier exists in session
-    if (!req.session.codeVerifier) {
-      throw new Error('Missing code verifier in session');
+    try {
+        const { code, state } = req.query;
+        if (!code || !state) throw new Error('Missing code or state');
+
+        // Retrieve and validate code verifier
+        const entry = codeVerifiers.get(state);
+        if (!entry || Date.now() > entry.expires) {
+            throw new Error('Invalid state or expired code verifier');
+        }
+        codeVerifiers.delete(state);
+
+        // Token exchange
+        const authHeader = Buffer.from(
+            `${authConfig.client_id}:${authConfig.client_secret}`
+        ).toString('base64');
+
+        const response = await axios.post(
+            'https://api.twitter.com/2/oauth2/token',
+            new URLSearchParams({
+                code,
+                grant_type: 'authorization_code',
+                redirect_uri: authConfig.redirect_uri,
+                code_verifier: entry.codeVerifier
+            }),
+            {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Authorization': `Basic ${authHeader}`
+                }
+            }
+        );
+
+        await setAccessToken(response.data);
+        res.send('Authentication successful!');
+    } catch (error) {
+        console.error('Error:', error.message);
+        res.status(500).send(`Authentication failed: ${error.message}`);
     }
-
-    const x_token_url = 'https://api.twitter.com/2/oauth2/token';
-    const authHeader = Buffer.from(
-      `${authConfig.client_id}:${authConfig.client_secret}`
-    ).toString('base64');
-
-    const response = await axios.post(x_token_url, new URLSearchParams({
-      code: req.query.code,
-      grant_type: 'authorization_code',
-      redirect_uri: authConfig.redirect_uri,
-      code_verifier: req.session.codeVerifier
-    }), {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': `Basic ${authHeader}`
-      }
-    });
-
-    console.log(response.data)
-    await setAccessToken({
-      access_token: response.data.access_token,
-      refresh_token: response.data.refresh_token,
-      expires_in: response.data.expires_in
-    });
-
-    // Clear the code verifier from session after use
-    req.session.codeVerifier = null;
-    req.session.save();
-
-    res.send('Authentication successful!');
-  } catch (error) {
-    console.error('Full error:', error.response?.data || error.message);
-    res.status(500).send(`Authentication failed: ${error.message}`);
-  }
 };
+
+// Cleanup function
+function cleanupCodeVerifiers() {
+    const now = Date.now();
+    for (const [state, entry] of codeVerifiers) {
+        if (now > entry.expires) codeVerifiers.delete(state);
+    }
+}
