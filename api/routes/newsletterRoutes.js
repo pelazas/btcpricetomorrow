@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.post('/add', addEmail);
 router.post('/remove', removeEmail)
-router.post('/createPost', createPost)
+router.get('/createPost', createPost)
 
 
 module.exports = router;
