@@ -25,6 +25,7 @@ services:
       - X_CLIENT_ID=${X_CLIENT_ID}
       - X_CLIENT_SECRET=${X_CLIENT_SECRET}
       - X_REDIRECT_URI=${X_REDIRECT_URI}
+      - SESSION_SECRET=${SESSION_SECRET}
     ports:
       - "8000:8000"
     networks:

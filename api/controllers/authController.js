@@ -41,7 +41,7 @@ exports.OAuthCallback = async (req, res) => {
       code: req.query.code,
       grant_type: 'authorization_code',
       redirect_uri: authConfig.redirect_uri,
-      code_verifier: req.session.codeVerifier // Now correctly retrieved
+      code_verifier: req.session.codeVerifier
     }), {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
