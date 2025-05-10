@@ -70,13 +70,6 @@ app.use((req, res, next) => {
 });
 
 app.use((req, res, next) => {
-  console.log('Session ID:', req.sessionID);
-  console.log('Session data:', req.session);
-  console.log('Cookies:', req.headers.cookie);
-  next();
-});
-
-app.use((req, res, next) => {
   res.header('Access-Control-Allow-Credentials', 'true');
   res.header('Access-Control-Allow-Origin', req.headers.origin || allowedOrigins[0]);
   res.header('Access-Control-Allow-Methods', 'GET,POST');
