@@ -34,6 +34,7 @@ async function setAccessToken(data) {
 async function getAccessToken() {
     if (tokenCache) return tokenCache;
     
+    refreshToken();
     const tokenDoc = await AuthToken.findOne();
     tokenCache = tokenDoc;
     return tokenDoc;
