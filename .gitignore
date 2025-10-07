@@ -1,3 +1,5 @@
 .env
 .env.local
 .env.production
+package.json
+package-lock.json
