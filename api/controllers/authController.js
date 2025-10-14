@@ -6,7 +6,7 @@ const { authConfig, setAccessToken } = require('./../config/oauth');
 // In-memory store with expiration
 const codeVerifiers = new Map();
 
-exports.OAuth = (req, res) => {
+const OAuth = (req, res) => {
     // Generate state and code verifier
     const state = base64url(crypto.randomBytes(32));
     const codeVerifier = base64url(crypto.randomBytes(32));
@@ -33,7 +33,7 @@ exports.OAuth = (req, res) => {
     res.redirect(`https://twitter.com/i/oauth2/authorize?${params}`);
 };
 
-exports.OAuthCallback = async (req, res) => {
+const OAuthCallback = async (req, res) => {
     try {
         const { code, state } = req.query;
         if (!code || !state) throw new Error('Missing code or state');
@@ -81,3 +81,11 @@ function cleanupCodeVerifiers() {
         if (now > entry.expires) codeVerifiers.delete(state);
     }
 }
+
+
+// At the bottom
+module.exports = {
+  OAuth,
+  OAuthCallback,
+  codeVerifiers // export for test manipulation
+};
