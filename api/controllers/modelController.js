@@ -7,7 +7,7 @@ exports.getModel = async (req,res) => {
         // get stats from the ml module
         const response = await axios.get(`${process.env.ML_URI}/model`);
         // update (or add) the model in the database
-        ModelService.createOrUpdateModel(response.data)
+        await ModelService.createOrUpdateModel(response.data)
         // return model stats
         res.status(200).json(response.data)
 
