@@ -140,6 +140,7 @@ export default function PredictionCard({ prediction, loading, formattedDate, tod
                 } ${hasVoted && userVote !== "up" ? "opacity-50" : ""}`}
                 onClick={() => handleVote("up")}
                 disabled={hasVoted}
+                data-testid="vote-up-button"
               >
                 <ThumbsUpIcon className="h-5 w-5" />
                 <span>Up</span>
@@ -153,6 +154,7 @@ export default function PredictionCard({ prediction, loading, formattedDate, tod
                 } ${hasVoted && userVote !== "down" ? "opacity-50" : ""}`}
                 onClick={() => handleVote("down")}
                 disabled={hasVoted}
+                data-testid="vote-down-button"
               >
                 <ThumbsDownIcon className="h-5 w-5" />
                 <span>Down</span>

@@ -66,6 +66,7 @@ const NewsletterSection: FC<NewsletterSectionProps> = ({}) => {
                             className="flex-grow bg-white/90 placeholder-orange-300 text-orange-900"
                             required
                             disabled={isLoading}
+                            data-testid="subscribe-input"
                         />
                         <Button 
                             type="submit" 

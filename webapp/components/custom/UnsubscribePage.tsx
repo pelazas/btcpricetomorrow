@@ -75,11 +75,13 @@ const UnsubscribePage: FC = () => {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
               className="flex-1 min-w-0 block w-full px-3 py-2 rounded-l-md border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              data-testid="unsubscribe-input"
             />
             <button
               onClick={handleUnsubscribe}
               disabled={isLoading}
               className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-r-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+              data-testid="unsubscribe-button"
             >
               {isLoading ? 'Unsubscribing...' : 'Unsubscribe'}
             </button>
