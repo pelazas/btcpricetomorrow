@@ -24,13 +24,11 @@ class XGBoostPreprocessor:
         return X,y,last_row
     
     def _add_technical_indicators(self, df):
-        # RSI
         delta = df['Close'].diff()
         gain = delta.where(delta > 0, 0)
         loss = -delta.where(delta < 0, 0)
         df['RSI'] = 100 - (100 / (1 + gain.rolling(14).mean() / loss.rolling(14).mean()))
 
-        # MACD
         ema12 = df['Close'].ewm(span=12).mean()
         ema26 = df['Close'].ewm(span=26).mean()
         df['MACD'] = ema12 - ema26
@@ -41,5 +39,4 @@ class XGBoostPreprocessor:
         df['Daily_Range'] = df['High'] - df['Low']
         df['Momentum_7'] = df['Close'] - df['Close'].shift(7)
         df['Volume_Change'] = df['Volume'].pct_change()
-        # ... (your existing code)
         return df
