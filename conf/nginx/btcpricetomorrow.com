@@ -18,18 +18,15 @@ server {
     location /api {
         proxy_pass http://localhost:8000;
         
-        # Add these three lines to preserve cookies through Cloudflare
         proxy_cookie_path ~*^/.* /;
         proxy_cookie_domain ~^(.*)$ $host;
         proxy_pass_header Set-Cookie;
         
-        # Existing headers
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
         
-        # Security headers
         proxy_hide_header X-Powered-By;
     }
 

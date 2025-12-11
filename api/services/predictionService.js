@@ -43,6 +43,7 @@ exports.updateActualPrices = async () => {
             
             prediction.actual_price = response.data.market_data.current_price.usd;
             await prediction.save();
+            await sleep(1000);
         } catch (error) {
             console.error(`Error fetching price for date ${formattedDate}:`, error.message);
             continue; 
