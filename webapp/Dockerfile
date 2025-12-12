@@ -30,5 +30,9 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 
+# Set the host environment variable for Next.js to bind to all interfaces
+ENV HOST=0.0.0.0
+
 EXPOSE 3000
-CMD ["npm", "start"]
+# Run the Next.js server directly
+CMD ["node_modules/.bin/next", "start"]
