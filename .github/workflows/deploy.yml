@@ -9,6 +9,14 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      
+      - name: Test SSH
+        run: |
+          ssh -i ~/.ssh/btcpricetmrw2.pem \
+            -o IdentitiesOnly=yes \
+            -o StrictHostKeyChecking=yes \
+            -vvv \
+            cristiano@5.75.155.106 "whoami"
 
       - name: Set up SSH key
         run: |
