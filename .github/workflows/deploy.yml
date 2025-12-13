@@ -13,12 +13,11 @@ jobs:
       - name: Set up SSH key
         run: |
           mkdir -p ~/.ssh
-          cat <<EOF > ~/.ssh/btcpricetmrw.pem
+          cat > ~/.ssh/btcpricetmrw.pem <<'EOF'
           ${{ secrets.SSH_PRIVATE_KEY }}
           EOF
           chmod 600 ~/.ssh/btcpricetmrw.pem
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
-          ssh-keyscan 5.75.155.106 >> ~/.ssh/known_hosts
+          ssh-keyscan -H 5.75.155.106 >> ~/.ssh/known_hosts
 
       - name: Run Commands via SSH
         run: |
