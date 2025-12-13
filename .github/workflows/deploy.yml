@@ -18,11 +18,11 @@ jobs:
           EOF
           chmod 600 ~/.ssh/btcpricetmrw.pem
           ssh-keyscan github.com >> ~/.ssh/known_hosts
-          ssh-keyscan 159.69.205.221 >> ~/.ssh/known_hosts
+          ssh-keyscan 5.75.155.106 >> ~/.ssh/known_hosts
 
       - name: Run Commands via SSH
         run: |
-          ssh -i ~/.ssh/btcpricetmrw.pem pelazas@159.69.205.221 "
+          ssh -i ~/.ssh/btcpricetmrw.pem cristiano@5.75.155.106 "
             cd btcpricetomorrow && \
             git pull https://${{ secrets.GH_TOKEN }}@github.com/pelazas/btcpricetomorrow.git main && \
             docker-compose down --volumes --rmi all --remove-orphans && \
