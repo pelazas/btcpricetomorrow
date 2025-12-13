@@ -13,15 +13,15 @@ jobs:
       - name: Set up SSH key
         run: |
           mkdir -p ~/.ssh
-          cat > ~/.ssh/btcpricetmrw.pem <<'EOF'
+          cat > ~/.ssh/btcpricetmrw2.pem <<'EOF'
           ${{ secrets.SSH_PRIVATE_KEY }}
           EOF
-          chmod 600 ~/.ssh/btcpricetmrw.pem
+          chmod 600 ~/.ssh/btcpricetmrw2.pem
           ssh-keyscan -H 5.75.155.106 >> ~/.ssh/known_hosts
 
       - name: Run Commands via SSH
         run: |
-          ssh -i ~/.ssh/btcpricetmrw.pem cristiano@5.75.155.106 "
+          ssh -i ~/.ssh/btcpricetmrw2.pem cristiano@5.75.155.106 "
             cd btcpricetomorrow && \
             git pull https://${{ secrets.GH_TOKEN }}@github.com/pelazas/btcpricetomorrow.git main && \
             docker-compose down --volumes --rmi all --remove-orphans && \
