@@ -56,6 +56,6 @@ jobs:
 
               git pull https://${{ secrets.GH_TOKEN }}@github.com/pelazas/btcpricetomorrow.git main
 
-              docker-compose down --volumes --rmi all --remove-orphans
-              docker-compose --profile production up --build -d
+              docker compose down --volumes --rmi all --remove-orphans
+              docker compose --profile production up --build -d
             "
