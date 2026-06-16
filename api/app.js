@@ -27,15 +27,15 @@ app.use(session({
   cookie: {
     secure: true,
     sameSite: 'none',
-    domain: 'btcpricetomorrow.com',
+    domain: 'btcpricetomorrow.pelazas.com',
     path: '/',
     httpOnly: true,
     maxAge: 86400000
   }
 }));
 
-const allowedOrigins = process.env.NODE_ENV === 'production' 
-  ? ['https://btcpricetomorrow.com', 'https://www.btcpricetomorrow.com'] 
+const allowedOrigins = process.env.NODE_ENV === 'production'
+  ? ['https://btcpricetomorrow.pelazas.com']
   : ['http://localhost:3000'];
 
 app.use(cors({

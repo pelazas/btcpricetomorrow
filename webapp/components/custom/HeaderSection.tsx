@@ -9,7 +9,7 @@ export default function HeaderSection() {
       transition={{ duration: 0.5 }}
     >
       <h1 className="text-4xl font-bold text-orange-800">Bitcoin Price Tomorrow</h1>
-      <h2 className="text-xl text-orange-600 mt-2">btcpricetomorrow.com</h2>
+      <h2 className="text-xl text-orange-600 mt-2">btcpricetomorrow.pelazas.com</h2>
       <p className="text-sm text-orange-700 mt-4">
         Predictions are made daily at 00:00 for the Bitcoin price at 00:00 the following day.
       </p>

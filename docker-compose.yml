@@ -6,7 +6,7 @@ services:
       args:
       - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3001:3000"
     env_file:
       - .env
     networks:
@@ -27,7 +27,7 @@ services:
       - X_REDIRECT_URI=${X_REDIRECT_URI}
       - SESSION_SECRET=${SESSION_SECRET}
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
     networks:
       - app-network
 
@@ -38,7 +38,7 @@ services:
     environment:
       - PORT=8001
     ports:
-      - "8001:8001"
+      - "127.0.0.1:8001:8001"
     networks:
       - app-network
 

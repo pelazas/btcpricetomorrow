@@ -29,10 +29,10 @@ async function sendEmail(value, email){
             <p>Here is the Bitcoin price prediction for <strong>${formattedDate} at 00:00</strong>:</p>
             <p style="font-size: 1.5em; font-weight: bold; color: #0f9d58;">$${roundedValue}</p>
             <p>This prediction is based on recent data trends and algorithmic analysis. We will send you an update every day with the latest forecast.</p>
-            <p>Visit our site for more info: <a href="https://btcpricetomorrow.com" target="_blank">btcpricetomorrow.com</a></p>
+            <p>Visit our site for more info: <a href="https://btcpricetomorrow.pelazas.com" target="_blank">btcpricetomorrow.pelazas.com</a></p>
             <hr style="margin-top: 30px;">
             <p style="font-size: 0.8em; color: #888;">This is an automated message. Please do not reply to this email.</p>
-            <p style="font-size: 0.8em; color: #888;">If you want to unsubscribe from this newsletter, <a href="https://btcpricetomorrow.com/unsubscribe?email=${email}" target="_blank">click here</a>.</p>
+            <p style="font-size: 0.8em; color: #888;">If you want to unsubscribe from this newsletter, <a href="https://btcpricetomorrow.pelazas.com/unsubscribe?email=${email}" target="_blank">click here</a>.</p>
         </div>
     </body>
     </html>
