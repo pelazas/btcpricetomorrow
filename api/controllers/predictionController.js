@@ -14,13 +14,15 @@ exports.makePrediction = async (req, res) => {
     // Call PredictionService to store the prediction
     const prediction = await PredictionService.createPrediction(predictedValue);
 
-    // Get all emails from database
-    const emails = await Email.find();
-    
-    // Send prediction email to each subscriber
-    for (const email of emails) {
-      console.log("Sending email to", email.email)
-      await sendEmail(predictedValue, email.email);
+    // Send prediction email to each subscriber, unless explicitly skipped (e.g. ?sendEmail=false)
+    if (req.query.sendEmail !== 'false') {
+      const emails = await Email.find();
+      for (const email of emails) {
+        console.log("Sending email to", email.email)
+        await sendEmail(predictedValue, email.email);
+      }
+    } else {
+      console.log("Skipping subscriber emails (sendEmail=false)")
     }
 
     res.status(201).json(prediction);
